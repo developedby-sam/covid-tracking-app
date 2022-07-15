@@ -86,3 +86,10 @@ body {
   font-family: inherit;
   background-color: #cffafe;
 }
+
+#casesChart {
+  width: 100%;
+  height: 300px;
+  margin: 0;
+  padding: 0;
+}

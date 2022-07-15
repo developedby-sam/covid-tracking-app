@@ -23,3 +23,10 @@ export const GetCountryData = async (country) => {
   );
   return await countryData;
 };
+
+export const GetAllTimeCountryStatus = async (country) => {
+  const allTimeData = await fetchApi(
+    `https://api.covid19api.com/total/dayone/country/${country}`
+  );
+  return allTimeData;
+};

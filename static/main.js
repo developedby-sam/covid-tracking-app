@@ -1,8 +1,13 @@
-import "./style.css";
-import { GetWorldData, GetCountryData } from "./components/fetch-data";
+import {
+  GetWorldData,
+  GetCountryData,
+  GetAllTimeCountryStatus,
+} from "./components/fetch-data";
 import numberWithCommas from "./components/number-formater";
 
 let meterData = await GetWorldData();
+let allTimeCountryData;
+let chart = anychart.area();
 
 const percentageCalculator = function (numerator, denomerator) {
   const percentage = (numerator / denomerator) * 100;
@@ -23,6 +28,14 @@ const updateMeterData = function () {
     meterData.recovered,
     meterData.total_cases
   );
+};
+
+const updateAllTimeChart = function () {
+  const last10 = allTimeCountryData.slice(-50);
+  const graphData = [];
+  last10.forEach((data, indx) => graphData.push([`${indx}`, data.Active]));
+  chart.area([]);
+  chart.area(graphData);
 };
 
 const initApp = function () {
@@ -46,8 +59,34 @@ let country = "USA";
 selectCountry.addEventListener("change", async (event) => {
   country = event.target.value;
   meterData = await GetCountryData(country);
+  allTimeCountryData = await GetAllTimeCountryStatus(country);
 
   if (meterData) {
     updateMeterData();
   }
+
+  if (allTimeCountryData) {
+    updateAllTimeChart();
+  }
+});
+
+anychart.onDocumentReady(function () {
+  // // create a chart
+  // var chart = anychart.area();
+
+  // create an area series and set the data
+  chart.area([]);
+
+  // set the chart title
+  chart.title("Area Chart: Basic Sample");
+
+  // set the titles of the axes
+  chart.xAxis().title("Month");
+  chart.yAxis().title("Cases");
+
+  // set the container id
+  chart.container("casesChart");
+
+  // initiate drawing the chart
+  chart.draw();
 });
